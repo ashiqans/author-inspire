@@ -1,0 +1,162 @@
+<div id="container">
+  <!-- Titlebar Starts-->
+  <div class="toolbar">
+    <!-- <h2>Authors</h2> -->
+    <h2 class="titleHeader">Author Details</h2>
+  </div>
+  <!-- Titlebar Ends -->
+
+  <!-- Content Starts -->
+  <!-- Author details -->
+  <ng-container>
+    <!-- <h2 class="titleHeader">Author Details</h2> -->
+    <div class="authorDetail">
+      <div class="detail">
+        <p>{{ authorDetails?.author }}</p>
+        <label>Authors Name</label>
+      </div>
+
+      <div class="detail">
+        <p>{{ authorDetails?.birthday }}</p>
+        <label>Birthday</label>
+      </div>
+
+      <div class="detail">
+        <p>{{ authorDetails?.birthPlace }}</p>
+        <label>Birth Place</label>
+      </div>
+    </div>
+  </ng-container>
+  <hr />
+  <!-- Author Books Action -->
+  <div class="action" #title>
+    <button mat-stroked-button color="primary" (click)="addBook()" id="add">
+      Add
+    </button>
+    <button mat-stroked-button color="accent" (click)="resetBook()" id="reset">
+      Reset
+    </button>
+    <mat-slide-toggle (click)="sortBook()" id="sort" [checked]="!sortByName"
+      >Sort A-Z</mat-slide-toggle
+    >
+  </div>
+  <!-- Add / Edit Book list -->
+  <ng-container *ngIf="addNewBook">
+    <h2 class="titleHeader">Add Book</h2>
+    <div class="addNewbook">
+      <form [formGroup]="addBookForm">
+        <mat-form-field class="form">
+          <mat-label>Title</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="Enter Title"
+            formControlName="title"
+          />
+          <mat-error
+            *ngIf="newBook?.title?.touched && newBook?.title?.errors?.required"
+          >
+            Title is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="form">
+          <mat-label>Image URL</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="Enter Image URL"
+            formControlName="imageUrl"
+          />
+          <mat-error
+            *ngIf="
+              newBook?.imageUrl?.touched && newBook?.imageUrl?.errors?.required
+            "
+          >
+            Image URL is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="form">
+          <mat-label>Publish Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="dp1"
+            formControlName="PublishDate"
+            [min]="minDate"
+            [max]="maxDate"
+          />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="dp1"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #dp1 disabled="false"></mat-datepicker>
+          <mat-error
+            *ngIf="
+              newBook?.PublishDate?.touched &&
+              newBook?.PublishDate?.errors?.required
+            "
+          >
+            Publish Date is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="form">
+          <mat-label>Purchase Link</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="Select Publish Date"
+            formControlName="purchaseLink"
+          />
+          <mat-error
+            *ngIf="
+              newBook?.purchaseLink?.touched &&
+              newBook?.purchaseLink?.errors?.required
+            "
+          >
+            Purchase Link is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </form>
+    </div>
+    <div class="action">
+      <button
+        mat-stroked-button
+        color="primary"
+        id="saveButton"
+        (click)="saveBook()"
+        id="add"
+        [disabled]="!addBookForm.valid"
+      >
+        Save
+      </button>
+      <button
+        mat-stroked-button
+        color="accent"
+        id="saveButton"
+        (click)="cancel()"
+        id="add"
+      >
+        Cancel
+      </button>
+    </div>
+  </ng-container>
+  <hr />
+  <!-- Author Books list -->
+  <div>
+    <h2 class="titleHeader">Books List</h2>
+    <div class="authorBooks">
+      <div
+        class="books"
+        *ngFor="let book of booksList; trackBy: trackItem; let i = index"
+      >
+        <a href="{{ book?.purchaseLink }}" #editedBook>{{ book?.title }}</a>
+        <img [src]="book?.imageUrl" (error)="invalidImgError($event, i)" />
+        <p>{{ book?.PublishDate }}</p>
+        <div class="actionIcon">
+          <mat-icon (click)="editBook(i, book)">edit</mat-icon>
+          <mat-icon (click)="deleteBook(i)">delete</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Content Ends -->
+</div>
